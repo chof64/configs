@@ -1,0 +1,75 @@
+version: "3"
+services:
+  core-traefik:
+    image: traefik:latest
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
+      - --certificatesresolvers.letsencrypt.acme.email=${CORE_TRAEFIK_SSL_EMAIL?CORE_TRAEFIK_SSL_EMAIL not set}
+      - --certificatesresolvers.letsencrypt.acme.storage=/traefik/cert/acme.json
+
+      - --log.level=ERROR
+      - --log.filepath=/traefik/logs/error.log
+      - --log.format=json
+
+      # - --accesslog=true
+      # - --accesslog.bufferingsize=100
+      # - --accesslog.filepath=/traefik/access.log
+      # - --accesslog.format=json
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - core-traefik:/traefik/cert/
+      - /var/log/traefik/:/traefik/logs/
+    restart: unless-stopped
+
+  core-portainer:
+    image: portainer/portainer-ee:latest
+    command: -H unix:///var/run/docker.sock
+    labels:
+      traefik.enable: true
+      traefik.docker.network: traefik-public
+
+      # ROUTER [core] 9000
+      traefik.http.services.core-portainer-service.loadbalancer.server.port: 9000
+
+      traefik.http.routers.core-portainer-http.service: core-portainer-service
+      traefik.http.routers.core-portainer-http.entrypoints: http
+      traefik.http.routers.core-portainer-http.rule: Host(`${CORE_PORTAINER_9000_DOMAIN?CORE_PORTAINER_9000_DOMAIN not set}`)
+
+      traefik.http.routers.core-portainer-https.service: core-portainer-service
+      traefik.http.routers.core-portainer-https.entrypoints: https
+      traefik.http.routers.core-portainer-https.rule: Host(`${CORE_PORTAINER_9000_DOMAIN?CORE_PORTAINER_9000_DOMAIN not set}`)
+      traefik.http.routers.core-portainer-https.tls: true
+      traefik.http.routers.core-portainer-https.tls.certresolver: letsencrypt
+      
+      traefik.http.routers.core-portainer-http.middlewares: REDI-PROTIREDI-redirect
+
+      # MIDDLEWARE [REDI-PROTIREDI]
+      traefik.http.middlewares.REDI-PROTIREDI-redirect.redirectscheme.scheme: https
+      traefik.http.middlewares.REDI-PROTIREDI-redirect.redirectscheme.permanent: true
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - core-portainer:/data/
+    restart: unless-stopped
+
+networks:
+  # RUN BEFORE STARTUP: `docker network create traefik-public`
+  traefik-public:
+    external: true
+
+volumes:
+  core-traefik:
+  core-portainer:

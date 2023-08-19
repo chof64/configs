@@ -1,0 +1,34 @@
+# PREFIX: PREFIX
+
+version: "3"
+services:
+  PREFIX-whoami:
+    image: traefik/whoami:latest
+    labels:
+      traefik.enable: true
+      traefik.docker.network: traefik-public
+
+      # ROUTER [MAIN] 80
+      traefik.http.services.MAIN-whoami-service.loadbalancer.server.port: 80
+
+      traefik.http.routers.MAIN-whoami-http.service: MAIN-whoami-service
+      traefik.http.routers.MAIN-whoami-http.entrypoints: http
+      traefik.http.routers.MAIN-whoami-http.rule: Host(`${MAIN_WHOAMI_80_DOMAIN?MAIN_WHOAMI_80_DOMAIN not set}`)
+
+      traefik.http.routers.MAIN-whoami-https.service: MAIN-whoami-service
+      traefik.http.routers.MAIN-whoami-https.entrypoints: https
+      traefik.http.routers.MAIN-whoami-https.rule: Host(`${MAIN_WHOAMI_80_DOMAIN?MAIN_WHOAMI_80_DOMAIN not set}`)
+      traefik.http.routers.MAIN-whoami-https.tls: true
+      traefik.http.routers.MAIN-whoami-https.tls.certresolver: letsencrypt
+      
+      traefik.http.routers.MAIN-whoami-http.middlewares: REDI-WHOAMIREDI-redirect
+
+      # MIDDLEWARE [REDI-WHOAMIREDI]
+      traefik.http.middlewares.REDI-WHOAMIREDI-redirect.redirectscheme.scheme: https
+      traefik.http.middlewares.REDI-WHOAMIREDI-redirect.redirectscheme.permanent: true
+    networks:
+      - traefik-public
+
+networks:
+  traefik-public:
+    external: true
