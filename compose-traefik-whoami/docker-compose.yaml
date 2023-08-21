@@ -9,19 +9,19 @@ services:
       traefik.docker.network: traefik-public
 
       # ROUTER [MAIN] 80
-      traefik.http.services.MAIN-whoami-service.loadbalancer.server.port: 80
+      traefik.http.services.MAIN-whoami-80-service.loadbalancer.server.port: 80
 
-      traefik.http.routers.MAIN-whoami-http.service: MAIN-whoami-service
-      traefik.http.routers.MAIN-whoami-http.entrypoints: http
-      traefik.http.routers.MAIN-whoami-http.rule: Host(`${MAIN_WHOAMI_80_DOMAIN?MAIN_WHOAMI_80_DOMAIN not set}`)
+      traefik.http.routers.MAIN-whoami-80-http.service: MAIN-whoami-80-service
+      traefik.http.routers.MAIN-whoami-80-http.entrypoints: http
+      traefik.http.routers.MAIN-whoami-80-http.rule: Host(`${WHOAMI_80_DOMAIN?WHOAMI_80_DOMAIN not set}`)
 
-      traefik.http.routers.MAIN-whoami-https.service: MAIN-whoami-service
-      traefik.http.routers.MAIN-whoami-https.entrypoints: https
-      traefik.http.routers.MAIN-whoami-https.rule: Host(`${MAIN_WHOAMI_80_DOMAIN?MAIN_WHOAMI_80_DOMAIN not set}`)
-      traefik.http.routers.MAIN-whoami-https.tls: true
-      traefik.http.routers.MAIN-whoami-https.tls.certresolver: letsencrypt
+      traefik.http.routers.MAIN-whoami-80-https.service: MAIN-whoami-80-service
+      traefik.http.routers.MAIN-whoami-80-https.entrypoints: https
+      traefik.http.routers.MAIN-whoami-80-https.rule: Host(`${WHOAMI_80_DOMAIN?WHOAMI_80_DOMAIN not set}`)
+      traefik.http.routers.MAIN-whoami-80-https.tls: true
+      traefik.http.routers.MAIN-whoami-80-https.tls.certresolver: letsencrypt
       
-      traefik.http.routers.MAIN-whoami-http.middlewares: REDI-WHOAMIREDI-redirect
+      traefik.http.routers.MAIN-whoami-80-http.middlewares: REDI-WHOAMIREDI-redirect
 
       # MIDDLEWARE [REDI-WHOAMIREDI]
       traefik.http.middlewares.REDI-WHOAMIREDI-redirect.redirectscheme.scheme: https

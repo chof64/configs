@@ -11,7 +11,7 @@ services:
 
       - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
-      - --certificatesresolvers.letsencrypt.acme.email=${CORE_TRAEFIK_SSL_EMAIL?CORE_TRAEFIK_SSL_EMAIL not set}
+      - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_SSL_EMAIL?TRAEFIK_SSL_EMAIL not set}
       - --certificatesresolvers.letsencrypt.acme.storage=/traefik/cert/acme.json
 
       - --log.level=ERROR
@@ -41,19 +41,19 @@ services:
       traefik.docker.network: traefik-public
 
       # ROUTER [core] 9000
-      traefik.http.services.core-portainer-service.loadbalancer.server.port: 9000
+      traefik.http.services.core-portainer-9000-service.loadbalancer.server.port: 9000
 
-      traefik.http.routers.core-portainer-http.service: core-portainer-service
-      traefik.http.routers.core-portainer-http.entrypoints: http
-      traefik.http.routers.core-portainer-http.rule: Host(`${CORE_PORTAINER_9000_DOMAIN?CORE_PORTAINER_9000_DOMAIN not set}`)
+      traefik.http.routers.core-portainer-9000-http.service: core-portainer-9000-service
+      traefik.http.routers.core-portainer-9000-http.entrypoints: http
+      traefik.http.routers.core-portainer-9000-http.rule: Host(`${PORTAINER_9000_DOMAIN?PORTAINER_9000_DOMAIN not set}`)
 
-      traefik.http.routers.core-portainer-https.service: core-portainer-service
-      traefik.http.routers.core-portainer-https.entrypoints: https
-      traefik.http.routers.core-portainer-https.rule: Host(`${CORE_PORTAINER_9000_DOMAIN?CORE_PORTAINER_9000_DOMAIN not set}`)
-      traefik.http.routers.core-portainer-https.tls: true
-      traefik.http.routers.core-portainer-https.tls.certresolver: letsencrypt
+      traefik.http.routers.core-portainer-9000-https.service: core-portainer-9000-service
+      traefik.http.routers.core-portainer-9000-https.entrypoints: https
+      traefik.http.routers.core-portainer-9000-https.rule: Host(`${PORTAINER_9000_DOMAIN?PORTAINER_9000_DOMAIN not set}`)
+      traefik.http.routers.core-portainer-9000-https.tls: true
+      traefik.http.routers.core-portainer-9000-https.tls.certresolver: letsencrypt
       
-      traefik.http.routers.core-portainer-http.middlewares: REDI-PROTIREDI-redirect
+      traefik.http.routers.core-portainer-9000-http.middlewares: REDI-PROTIREDI-redirect
 
       # MIDDLEWARE [REDI-PROTIREDI]
       traefik.http.middlewares.REDI-PROTIREDI-redirect.redirectscheme.scheme: https
