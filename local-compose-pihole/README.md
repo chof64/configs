@@ -53,7 +53,3 @@ sudo kill -9 $(sudo lsof -t -i:53)
 This error occurs when you access the wrong route. Please make sure you are accessing the correct route.
 
 The Pi-hole Web UI is accessible at `http://<ip>:8080/admin/`.
-
-```
-
-```
