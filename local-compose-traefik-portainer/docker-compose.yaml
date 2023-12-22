@@ -9,10 +9,10 @@ services:
       - --entrypoints.http.address=:80
       - --entrypoints.https.address=:443
 
-      # - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      # - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
-      # - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_SSL_EMAIL?TRAEFIK_SSL_EMAIL not set}
-      # - --certificatesresolvers.letsencrypt.acme.storage=/traefik/cert/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
+      - --certificatesresolvers.letsencrypt.acme.email=${TRAEFIK_SSL_EMAIL?TRAEFIK_SSL_EMAIL not set}
+      - --certificatesresolvers.letsencrypt.acme.storage=/traefik/cert/acme.json
 
       - --log.level=ERROR
       - --log.filepath=/traefik/logs/error.log
@@ -29,8 +29,7 @@ services:
       - traefik-public
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik:/traefik/cert/
-      - /var/log/traefik/:/traefik/logs/
+      - ./traefik:/traefik
     restart: unless-stopped
 
   core-portainer:
