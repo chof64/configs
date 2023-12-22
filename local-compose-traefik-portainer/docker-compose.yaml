@@ -30,7 +30,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik:/traefik
-    restart: unless-stopped
+    restart: always
 
   core-portainer:
     image: portainer/portainer-ce:latest
@@ -62,7 +62,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer:/data/
-    restart: unless-stopped
+    restart: always
 
 networks:
   # RUN BEFORE STARTUP: `docker network create traefik-public`
