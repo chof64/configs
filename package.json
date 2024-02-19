@@ -1,0 +1,21 @@
+{
+  "name": "configs",
+  "version": "0.0.0",
+  "description": "This repository contains my personal configuration files for various applications and services. I use these files as a starting point in deploying services in production and development environments.",
+  "scripts": {
+    "release": "release-it"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@release-it/conventional-changelog": "^8.0.1",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "release-it": "^17.1.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
