@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Reference:
+# https://docs.docker.com/engine/install/ubuntu/
+
 # Uninstall any previously installed versions:
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 
