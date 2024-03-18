@@ -2,8 +2,15 @@
 
 ## Install Docker
 
-1. Uninstall old versions
+Get the install script and run it:
+
+> ⚠️ SUPERUSER PRIVILEGES REQUIRED
 
 ```bash
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/docker-swarm/install.sh | sh
 ```
+
+This script will:
+
+- Install Docker Engine on your system.
+- Verify the Docker Engine installation by running the `hello-world` container. And will clean up after.
