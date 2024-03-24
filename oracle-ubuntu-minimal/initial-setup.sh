@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #* Set apt noninteractive
-sudo DEBIAN_FRONTEND=noninteractive
+sudo export DEBIAN_FRONTEND=noninteractive
 
 #* Update and upgrade the system
 sudo apt update
