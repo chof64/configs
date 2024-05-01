@@ -14,7 +14,7 @@ echo \
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
 
 # Install the latest docker engine version
-sudo DEBIAN_FRONTEND=noninteractive apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Test docker installation
 sudo docker run hello-world
