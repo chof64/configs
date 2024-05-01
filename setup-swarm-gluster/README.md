@@ -5,7 +5,7 @@
 To initialize the system, run the following command:
 
 ```bash
-curl -s https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/initialization.sh | sudo sh
+curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/initialization.sh | sudo sh
 ```
 
 This will update the system, install the basic packages, and reboot the system.
@@ -15,7 +15,7 @@ This will update the system, install the basic packages, and reboot the system.
 To install Docker Engine, run the following command:
 
 ```bash
-curl -s https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/install-docker-engine.sh | sudo sh
+curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/install-docker-engine.sh | sudo sh
 ```
 
 This will install Docker Engine and Docker Compose. It will also run the
@@ -26,7 +26,7 @@ This will install Docker Engine and Docker Compose. It will also run the
 To setup Docker Swarm, run the following command:
 
 ```bash
-curl -s https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/setup-docker-swarm.sh > setup-docker-swarm.sh
+curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/setup-docker-swarm.sh > setup-docker-swarm.sh
 nano setup-docker-swarm.sh
 sudo sh ./setup-docker-swarm.sh
 rm setup-docker-swarm.sh
@@ -48,7 +48,7 @@ sudo docker swarm join-token [manager/worker]
 To setup GlusterFS, run the following command:
 
 ```bash
-curl -s https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/setup-glusterfs.sh > setup-glusterfs.sh
+curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/setup-glusterfs.sh > setup-glusterfs.sh
 nano setup-glusterfs.sh
 sudo sh ./setup-glusterfs.sh
 rm setup-glusterfs.sh
