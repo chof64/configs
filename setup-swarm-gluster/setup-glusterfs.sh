@@ -2,7 +2,10 @@
 
 # User Input
 VOLUME_NAME=""
-HOST_PUBLIC_IP=""
+HOST_PRIVATE_IP=""
+
+# Uncomment to cancel
+# exit 1
 
 # Install GlusterFS
 sudo DEBIAN_FRONTEND=noninteractive apt update
@@ -15,7 +18,7 @@ sudo systemctl enable --now glusterd
 sudo mkdir -p /gluster/$VOLUME_NAME
 
 # Create the gluster volume
-sudo gluster volume create $VOLUME_NAME transport tcp $HOST_PUBLIC_IP:/gluster/$VOLUME_NAME force
+sudo gluster volume create $VOLUME_NAME transport tcp $HOST_PRIVATE_IP:/gluster/$VOLUME_NAME force
 
 # Start the gluster volume
 sudo gluster volume start $VOLUME_NAME
@@ -26,7 +29,7 @@ sudo gluster volume info
 
 # Mount the gluster volume
 sudo mkdir -p /mnt/$VOLUME_NAME
-sudo mount -t glusterfs $HOST_PUBLIC_IP:/$VOLUME_NAME /mnt/$VOLUME_NAME
+sudo mount -t glusterfs $HOST_PRIVATE_IP:/$VOLUME_NAME /mnt/$VOLUME_NAME
 
 # Add the gluster volume to /etc/fstab
-echo "$HOST_PUBLIC_IP:/$VOLUME_NAME /mnt/$VOLUME_NAME glusterfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
+echo "$HOST_PRIVATE_IP:/$VOLUME_NAME /mnt/$VOLUME_NAME glusterfs defaults,_netdev 0 0" | sudo tee -a /etc/fstab
