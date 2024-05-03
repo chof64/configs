@@ -20,6 +20,7 @@ sudo docker node update --label-add node.labels.core-services=true $NODE_ID
 sudo mkdir -p ~/swarm-core
 cd ~/swarm-core
 curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/docker-compose.yml -o docker-compose.yml
+sudo nano docker-compose.yml
 
 # Start the services
 sudo docker stack deploy -c docker-compose.yml core
