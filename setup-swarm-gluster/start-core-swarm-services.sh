@@ -17,8 +17,8 @@ NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
 sudo docker node update --label-add node.labels.core-services=true $NODE_ID
 
 # Download the compose file
-sudo mkdir -p ~/swarm-core
-cd ~/swarm-core
+sudo mkdir -p /swarm/core
+cd /swarm/core
 curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/docker-compose.yml -o docker-compose.yml
 sudo nano docker-compose.yml
 
