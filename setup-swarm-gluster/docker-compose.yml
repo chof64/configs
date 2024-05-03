@@ -1,0 +1,122 @@
+# Update the volume path to your desired location
+
+services:
+  traefik:
+    image: traefik:v3.0
+    ports:
+      - 80:80
+      - 443:443
+    deploy:
+      placement:
+        constraints:
+          - node.labels.core-services == true
+      labels:
+        #! TRAEFIK CONFIGURATION  ==============================================
+        - traefik.enable=true
+        - traefik.constraint-label=traefik-public
+        - traefik.docker.network=traefik-public
+
+        #? ROUTER [8080]
+        #* Load Balancer
+        - traefik.http.services.traefik-public.loadbalancer.server.port=8080
+        #* HTTP Router
+        - traefik.http.routers.traefik-public-http.entrypoints=http
+        - traefik.http.routers.traefik-public-http.rule=Host(`${TRAEFIK_DOMAIN?TRAEFIK_DOMAIN not set}`)
+        #* HTTP Redirect to HTTPS
+        - traefik.http.routers.traefik-public-http.middlewares=https-redirect
+        #* HTTPS Router
+        - traefik.http.routers.traefik-public-https.entrypoints=https
+        - traefik.http.routers.traefik-public-https.rule=Host(`${TRAEFIK_DOMAIN?TRAEFIK_DOMAIN not set}`)
+        #* Enable TLS for HTTPS
+        - traefik.http.routers.traefik-public-https.tls=true
+        - traefik.http.routers.traefik-public-https.tls.certresolver=le
+        #* Router Basic Auth
+        - traefik.http.routers.traefik-public-https.middlewares=admin-auth
+
+        #? MIDDLEWARES
+        #* https-redirect
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+        #* admin-auth
+        - traefik.http.middlewares.admin-auth.basicauth.users=${TRAEFIK_USERNAME?TRAEFIK_USERNAME not set}:${TRAEFIK_HASHED_PASSWORD?TRAEFIK_HASHED_PASSWORD not set}
+
+        #! SERVICE  ============================================================
+        - traefik.http.routers.traefik-public-https.service=api@internal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /mnt/swarm-volume/core_traefik-public-certificates:/certificates
+    command:
+      - --providers.docker
+      - --providers.swarm.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
+
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+
+      - --certificatesresolvers.le.acme.email=${EMAIL?Variable not set}
+      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=http
+
+      - --accesslog
+      - --log
+
+      - --api
+    networks:
+      - traefik-public
+
+  agent:
+    image: portainer/agent
+    environment:
+      AGENT_CLUSTER_ADDR: tasks.agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /mnt/swarm-volume:/var/lib/docker/volumes
+    networks:
+      - agent-network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.platform.os == linux
+
+  portainer:
+    image: portainer/portainer-cc
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    volumes:
+      - /mnt/swarm-volume/core_portainer-data:/data
+    networks:
+      - agent-network
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.core-services == true
+      labels:
+        #! TRAEFIK CONFIGURATION  ==============================================
+        - traefik.enable=true
+        - traefik.constraint-label=traefik-public
+        - traefik.docker.network=traefik-public
+
+        #? ROUTER [9000]
+        #* Load Balancer
+        - traefik.http.services.portainer.loadbalancer.server.port=9000
+        #* HTTP Router
+        - traefik.http.routers.portainer-http.entrypoints=http
+        - traefik.http.routers.portainer-http.rule=Host(`${PORTAINER_DOMAIN?PORTAINER_DOMAIN not set}`)
+        #* HTTP Redirect to HTTPS
+        - traefik.http.routers.portainer-http.middlewares=https-redirect
+        #* HTTPS Router
+        - traefik.http.routers.portainer-https.entrypoints=https
+        - traefik.http.routers.portainer-https.rule=Host(`${PORTAINER_DOMAIN?PORTAINER_DOMAIN not set}`)
+        #* Enable TLS for HTTPS
+        - traefik.http.routers.portainer-https.tls=true
+        - traefik.http.routers.portainer-https.tls.certresolver=le
+
+networks:
+  traefik-public:
+    external: true
+  agent-network:
+    attachable: true
