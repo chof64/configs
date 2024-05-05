@@ -81,7 +81,13 @@ includes the following services:
 These services are responsible for managing the swarm and its service. They are
 crucial to the operation of the swarm.
 
-**Part 1: Deploy with docker-compose**
+**Part 1: Initialize the core swarm services**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/initialize-core-swarm-services.sh > initialize-core-swarm-services.sh
+```
+
+**Part 2: Deploy with docker-compose**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/chof64/configs/main/setup-swarm-gluster/start-core-swarm-services.sh > start-core-swarm-services.sh
@@ -90,7 +96,7 @@ sudo sh ./start-core-swarm-services.sh
 rm start-core-swarm-services.sh
 ```
 
-**Part 2: Configure firewall**
+**Part 3: Configure firewall**
 
 ```bash
 sudo iptables-save > ~/iptables.v4
